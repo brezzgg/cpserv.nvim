@@ -1,7 +1,7 @@
 local M = {}
 
 M.binaries = {
-	cpserv = "github.com/brezzgg/cpserv@latest"
+	cpserv = "github.com/brezzgg/cpserv@v1.0.1"
 }
 
 function M.is_installed(binary_name)
@@ -25,7 +25,7 @@ end
 function M.install_binary_async(binary_name, package_url, callback)
 	if M.is_installed(binary_name) then
 		vim.notify(
-			string.format("%s уже установлен", binary_name),
+			string.format("%s already installed", binary_name),
 			vim.log.levels.INFO
 		)
 		if callback then callback(true) end
@@ -33,7 +33,7 @@ function M.install_binary_async(binary_name, package_url, callback)
 	end
 
 	vim.notify(
-		string.format("Устанавливаем %s...", binary_name),
+		string.format("Installing %s...", binary_name),
 		vim.log.levels.INFO
 	)
 
