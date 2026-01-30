@@ -6,13 +6,17 @@ local clip = require("cpserv.clipboard")
 local M = {}
 
 local defaults = {
-	autoinstall = false,
+	autoinstall = true,
 	ssh_autoconnect = true,
 }
 
 function M.setup(opts)
 	opts = vim.tbl_deep_extend("force", defaults, opts or {})
 	M.config = opts
+
+	if opts.autoinstall == true then
+		M.install()
+	end
 
 	M.ssh_info = ssh.is_ssh()
 	if M.ssh_info.is_ssh and M.ssh_info.remote and M.ssh_info.remote ~= "" then
