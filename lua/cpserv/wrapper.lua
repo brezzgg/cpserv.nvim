@@ -16,7 +16,7 @@ function M.execute(args, ssh_info)
 
 	if ssh_info and ssh_info.is_ssh == true and ssh_info.remote ~= "" then
 		table.insert(cmd, "-r")
-		table.insert(cmd, string.format('"%s"', ssh_info.remote .. ":56384"))
+		table.insert(cmd, ssh_info.remote .. ":56384")
 	end
 
 	for _, value in ipairs(args) do
