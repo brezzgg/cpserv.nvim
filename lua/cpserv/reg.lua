@@ -67,7 +67,7 @@ function M.copy_func()
 		end
 
 		local text = table.concat(lines, "\n")
-		local res = wrapper.execute({ "write", string.format('"%s"', text) }, M.ssh_info)
+		local res = wrapper.execute({ "write", string.format('%s', text) }, M.ssh_info)
 
 		if res.error then
 			vim.notify("Cpserv: " .. res.error, vim.log.levels.WARN)
