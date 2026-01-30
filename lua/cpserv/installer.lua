@@ -24,10 +24,6 @@ end
 
 function M.install_binary_async(binary_name, package_url, callback)
 	if M.is_installed(binary_name) then
-		vim.notify(
-			string.format("%s already installed", binary_name),
-			vim.log.levels.INFO
-		)
 		if callback then callback(true) end
 		return
 	end
