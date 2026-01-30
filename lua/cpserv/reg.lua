@@ -2,7 +2,7 @@ local wrapper = require("cpserv.wrapper")
 
 local M = {}
 
-M.ssh_info = nil
+M.remote_info = nil
 
 --- @class Format
 --- @field text any
@@ -45,7 +45,7 @@ end
 
 function M.paste_func()
 	return function()
-		local res = wrapper.execute({ "read" }, M.ssh_info)
+		local res = wrapper.execute({ "read" }, M.remote_info)
 
 		if res.error then
 			vim.notify("Cpserv: " .. res.error, vim.log.levels.WARN)
@@ -67,41 +67,11 @@ function M.copy_func()
 		end
 
 		local text = table.concat(lines, "\n")
-		local res = wrapper.execute({ "write", string.format('%s', text) }, M.ssh_info)
+		local res = wrapper.execute({ "write", "--", string.format('%s', text) }, M.remote_info)
 
 		if res.error then
 			vim.notify("Cpserv: " .. res.error, vim.log.levels.WARN)
 		end
-	end
-end
-
-function M.paste(name)
-	local res = wrapper.execute({ "read" }, M.ssh_info)
-	if res.error ~= nil then
-		vim.notify("Cpserv: " .. res.error, vim.log.levels.WARN)
-		return
-	end
-
-	local formatted = format(res.msg)
-	if formatted.opts == "v" then
-		vim.fn.setreg(name, formatted.text[1], formatted.opts)
-	else
-		vim.fn.setreg(name, formatted.text, formatted.opts)
-	end
-end
-
-function M.copy(name)
-	local val = vim.fn.getreg(name)
-	local text
-	if type(val) == "table" then
-		text = table.concat(val, "\n")
-	else
-		text = val
-	end
-
-	local res = wrapper.execute({ "write", string.format('"%s"', text) }, M.ssh_info)
-	if res.error ~= nil then
-		vim.notify("Cpserv: " .. res.error, vim.log.levels.WARN)
 	end
 end
 

@@ -8,6 +8,7 @@ local M = {}
 local defaults = {
 	autoinstall = true,
 	ssh_autoconnect = true,
+	remote = "",
 }
 
 function M.setup(opts)
@@ -18,21 +19,18 @@ function M.setup(opts)
 		M.install()
 	end
 
-	M.ssh_info = ssh.is_ssh()
-	if M.ssh_info.is_ssh and M.ssh_info.remote and M.ssh_info.remote ~= "" then
-		clip.setup()
+	M.remote_info = ssh.get_remote_info()
+	if M.remote_info.enabled and M.remote_info.remote and M.remote_info.remote ~= "" then
+		if opts.ssh_autoconnect then
+			clip.setup()
+		end
 	end
-	reg.ssh_info = M.ssh_info
-end
 
---- @param regname string
-function M.read(regname)
-	reg.paste(regname)
-end
+	if opts.remote ~= "" then
+		M.remote_info = opts.remote
+	end
 
---- @param regname string
-function M.write(regname)
-	reg.copy(regname)
+	reg.remote_info = M.remote_info
 end
 
 --- @param enable boolean enable|disable cpserv.clipboard
@@ -51,6 +49,12 @@ function M.clipboard_status()
 	else
 		return true
 	end
+end
+
+--- @param remote string example: 192.168.0.5
+function M.set_remote(remote)
+	M.remote_info = remote
+	reg.remote_info = remote
 end
 
 function M.install()

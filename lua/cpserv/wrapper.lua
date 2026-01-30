@@ -9,14 +9,18 @@ local exe = "cpserv"
 --- @field error string?
 
 --- @param args string[]
---- @param ssh_info SshInfo
+--- @param remote_info RemoteInfo
 --- @return ExectueReturn
-function M.execute(args, ssh_info)
+function M.execute(args, remote_info)
 	local cmd = { exe }
 
-	if ssh_info and ssh_info.is_ssh == true and ssh_info.remote ~= "" then
+	if remote_info and remote_info.enabled == true and remote_info.remote and remote_info.remote ~= "" then
 		table.insert(cmd, "-r")
-		table.insert(cmd, ssh_info.remote .. ":56384")
+		local remote = tostring(remote_info.remote)
+		if not string.find(remote, ":") then
+			remote = remote .. ":56384"
+		end
+		table.insert(cmd, remote)
 	end
 
 	for _, value in ipairs(args) do
