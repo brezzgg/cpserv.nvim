@@ -1,7 +1,7 @@
 local M = {}
 
 M.binaries = {
-	cpserv = "github.com/brezzgg/cpserv@v1.0.1"
+	cpserv = "github.com/brezzgg/cpserv@v1.0.2"
 }
 
 function M.is_installed(binary_name)
