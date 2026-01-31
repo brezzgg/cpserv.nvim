@@ -43,13 +43,21 @@ local function normalize_lines(lines)
 	return {}
 end
 
+--- @param err string
+local function on_error(err)
+	require("cpserv.clipboard").undo()
+	vim.notify(err, vim.log.levels.WARN)
+	vim.notify("Cpserv: an error occurred, cpserv  was automatically disabled. To enable it, use :CpservEnable", vim.log.levels.ERROR)
+end
+
 function M.paste_func()
 	return function()
-		local res = wrapper.execute({ "read" }, M.remote_info)
+		local cached_result = { {}, "v" }
 
+		local res = wrapper.execute({ "read" }, M.remote_info)
 		if res.error then
-			vim.notify("Cpserv: " .. res.error, vim.log.levels.WARN)
-			return { {}, "v" }
+			on_error("Cpserv: " .. res.error)
+			return cached_result
 		end
 
 		local formatted = format(res.msg)
@@ -62,16 +70,15 @@ function M.copy_func()
 		lines = normalize_lines(lines)
 
 		if #lines == 0 then
-			vim.notify("Cpserv: nothing to copy", vim.log.levels.WARN)
 			return
 		end
 
 		local text = table.concat(lines, "\n")
-		local res = wrapper.execute({ "write", "--", string.format('%s', text) }, M.remote_info)
-
-		if res.error then
-			vim.notify("Cpserv: " .. res.error, vim.log.levels.WARN)
-		end
+		wrapper.execute_async({ "write", "--", string.format('%s', text) }, M.remote_info, function(res)
+			if res.error then
+				on_error("Cpserv: " .. res.error)
+			end
+		end)
 	end
 end
 
