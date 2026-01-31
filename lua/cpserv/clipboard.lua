@@ -20,6 +20,9 @@ function M.setup()
 			['*'] = reg.paste_func(),
 		},
 	}
+
+	vim.g.loaded_clipboard_provider = nil
+	vim.cmd([[runtime autoload/provider/clipboard.vim]])
 end
 
 function M.undo()
@@ -28,6 +31,9 @@ function M.undo()
 
 		M.prev = nil
 		M.enabled = false
+
+		vim.g.loaded_clipboard_provider = nil
+		vim.cmd([[runtime autoload/provider/clipboard.vim]])
 	end
 end
 
