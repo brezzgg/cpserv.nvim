@@ -58,7 +58,11 @@ function M.set_remote(remote)
 end
 
 function M.install()
-	inst.install_all()
+	inst.install_all(false)
+end
+
+function M.install_force()
+	inst.install_all(true)
 end
 
 return M

@@ -22,10 +22,12 @@ function M.get_gobin()
 	return vim.fn.expand("$HOME/go/bin")
 end
 
-function M.install_binary_async(binary_name, package_url, callback)
-	if M.is_installed(binary_name) then
-		if callback then callback(true) end
-		return
+function M.install_binary_async(binary_name, package_url, force, callback)
+	if not force then
+		if M.is_installed(binary_name) then
+			if callback then callback(true) end
+			return
+		end
 	end
 
 	vim.notify(
@@ -86,10 +88,10 @@ function M.install_binary_async(binary_name, package_url, callback)
 	end
 end
 
-function M.install_all()
+function M.install_all(force)
 	local success = true
 	for binary_name, package_url in pairs(M.binaries) do
-		if not M.install_binary_async(binary_name, package_url) then
+		if not M.install_binary_async(binary_name, package_url, force) then
 			success = false
 		end
 	end
